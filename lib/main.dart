@@ -38,10 +38,17 @@ class MainApp extends StatelessWidget {
   }
 }
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({
     super.key,
   });
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  bool _flag = false;
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +60,38 @@ class HomeScreen extends StatelessWidget {
       ],
       child: Scaffold(
         body: Center(
-          child: Text('${context.translations.hello}, ${DateFormat('dd LLL, yyyy').format(DateTime.now())}'),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Switch(
+                value: _flag,
+                onChanged: (value) {
+                  _flag = value;
+
+                  if (_flag) {
+                    LocaleSettings.setLocale(AppLocale.tk);
+                  } else {
+                    LocaleSettings.setLocale(AppLocale.ru);
+                  }
+                },
+              ),
+              Text(
+                context.translations.hello,
+                style: Theme.of(context).textTheme.displayMedium,
+              ),
+              Text(
+                DateFormat('dd LLL, yyyy').format(DateTime.now()),
+                style: Theme.of(context).textTheme.displayMedium,
+              ),
+              Text(
+                DateFormat(
+                  'dd LLL, yyyy',
+                  TranslationProvider.of(context).flutterLocale.toLanguageTag(),
+                ).format(DateTime.now()),
+                style: Theme.of(context).textTheme.displayMedium,
+              ),
+            ],
+          ),
         ),
       ),
     );
